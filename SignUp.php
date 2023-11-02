@@ -31,37 +31,14 @@
       </div>
       <div class="col-sm-6 text-black">
 
-        
-
         <div class="d-flex align-items-center h-custom-2 px-5 ms-xl-4 mt-5 pt-5 pt-xl-0 mt-xl-n5" >
 
-          <form style="width: 23rem;" name="registerform" action="registerdb.php" method="POST" onsubmit="return validateForm()" >
+          <form style="width: 23rem;" name="registerform" action="" method="post" >
 
             <h3 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Register</h3>
-            <?php
-            if(!empty($error_message)){
-            ?>
-            <div class="alert alert-danger">
-              <?=$error_message ?>
-            </div>
-            <?php
-            }
-            ?>
-            <?php
-            if(!empty($success_message)){
-              ?>
-            <div class= "alert alert-success">
-              <strong>
-                Success!!!
-              </strong>
-            </div>
-
-            <?php
-            }
-            ?>
-
+  
             <div class="form-outline mb-4">
-              <input type="text" id="U_Name" name="U_Name" class="form-control form-control-lg" placeholder="Username" required="required"/>
+              <input type="text" id="userame" name="username" class="form-control form-control-lg" placeholder="Username" required="required"/>
             </div>
 
             <div class="form-outline mb-4">
@@ -77,19 +54,20 @@
             </div>
 
             <div class="form-outline mb-4">
-              <input type="password" id="Cpassword" name="Cpassword" class="form-control form-control-lg" placeholder="Confirm Password" required/>
+              <input type="password" id="cpassword" name="cpassword" class="form-control form-control-lg" placeholder="Confirm Password" required/>
             </div>
 
             <div class="form-outline mb-4">
-                    <select id="U_Types" name="types" class="form-control form-control-lg">
-                    <option value="null">---</option>
+                    <select id="U_Types" name="types" id="types" class="form-control form-control-lg">
                       <option value="Owner">Owner</option>
                       <option value="Tenant">Tenant</option>
                     </select>
                   </div>
 
+                  <input type="hidden" id="confirmation" name="confirmation" value="Pending">
+
             <div class="pt-1 mb-4">
-              <button type="submit" class="btn btn-info btn-lg btn-block"  value="register">Register</button>
+              <button type="submit" class="btn btn-info btn-lg btn-block"  value="Register">Register</button>
             </div>
 
           </form>
@@ -102,39 +80,52 @@
   </div>
   
 </section>    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-<script>
-        function validateForm() {
-          document.registerform.submit();
-    var password = document.getElementById("password").value;
-    var confirm_password = document.getElementById("Cpassword").value;
-    var email = document.getElementById("email").value;
 
-    if (password !== confirm_password) {
-        alert("Passwords do not match.");
-        
-        return false;
-    } 
+<?php
+    include('connectDB.php');
 
-    // Use AJAX to check if the email already exists
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", "check_email.php", true);
-    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState == 4 && xhr.status == 200) {
-            if (xhr.responseText === "exists") {
-                alert("Email already exists. Please use a different email.");
-            } else {
-                // Email is unique, submit the form
-                document.getElementById("registrationform").submit();
+    if(!isset($_POST['username'],$_POST['password'],$_POST['email'],$_POST['contact'],$_POST['types'])){
+        exit('Empty Field(s)');
+    }
+    if(empty($_POST['username'] || empty($_POST['password']) || empty($_POST['email']) || empty($_POST['contact']) || empty($_POST['types']))){
+        exit('Values Empty');
+    }
+    if($stmt = $con->prepare('SELECT U_Email FROM user WHERE U_Email = ?')){
+        $stmt->bind_param('s',$_POST['email']);
+        $stmt->execute();
+        $stmt->store_result();
+
+        if($stmt->num_rows>0){
+            echo'<script>alert("email already exist")</script>';
+        }else{
+            $password = $_POST['password'];
+            if(strlen($password)<6){
+                echo '<script>alert("Password too short")</script>';
+
+            }else{
+                if($_POST['password'] !== $_POST['cpassword']){
+                    echo '<script>alert("Password Not Match")</script>';
+                }else{
+
+                if($stmt = $con->prepare('INSERT INTO user (U_Name,U_Contact,U_Email,U_Password,U_Types,Confirmation) VALUES (?,?,?,?,?,?)')){
+                    $password = password_hash($_POST['password'],PASSWORD_DEFAULT);
+                    $stmt->bind_param('ssssss',$_POST['username'],$_POST['contact'],$_POST['email'],$_POST['password'],$_POST['types'],$_POST['confirmation']);
+                    $stmt->execute();
+                    echo '<script>alert("Successfully Register")</script>';
+                }else{
+                    echo '<script>alert("Error Occured")</script>';
+                }
             }
-        }
-    };
-    xhr.send("email=" + email);
+            }
+    }
+        $stmt->close();
+    }
+    else{
+        echo '<script>alert("Error Occured")</script>';
+    }
+    $con->close();
 
-    return false; // Prevent the form from being submitted here
-      }
-    </script>
-
+?>
 </body>
 </html>
 

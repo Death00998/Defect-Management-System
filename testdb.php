@@ -23,14 +23,12 @@
                 if($_POST['password'] !== $_POST['cpassword']){
                     echo '<script>alert("Password Not Match")</script>';
                 }else{
-    
-                
+
                 if($stmt = $con->prepare('INSERT INTO user (U_Name,U_Contact,U_Email,U_Password,U_Types) VALUES (?,?,?,?,?)')){
                     $password = password_hash($_POST['password'],PASSWORD_DEFAULT);
                     $stmt->bind_param('sssss',$_POST['username'],$_POST['contact'],$_POST['email'],$_POST['password'],$_POST['types']);
                     $stmt->execute();
                     echo '<script>alert("Successfully Register")</script>';
-                    header('location: test.php');
                 }else{
                     echo '<script>alert("Error Occured")</script>';
                 }
