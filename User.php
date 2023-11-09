@@ -33,9 +33,10 @@
             <th scope="col">Name</th>
             <th scope="col">Email Address</th>
             <th scope="col">Contact Number</th>
+            <th scope="col">Building Name</th>
+            <th scope="col">Unit Number</th>
             <th scope="col">User Type</th>
             <th scope="col">Status</th>
-            <th scope="col">Action</th>
         </tr>
         </thead>
 
@@ -52,8 +53,10 @@
             <td><?php echo $row['U_Name']?></td>
             <td><?php echo $row['U_Email']?></td>
             <td><?php echo $row['U_Contact']?></td>
+            <td><?php echo $row['B_Name']?></td>
+            <td><?php echo $row['B_UF']?></td>
             <td><?php echo $row['U_Types']?></td>
-            <td><?php echo $row['Confirmation']?>
+            <td><?php echo $row['Confirmation']?></td>
 
             <td>
               <form action="User.php" method="post">
@@ -67,17 +70,62 @@
         <?php } ?>
         
         <?php
-          if(isset($_POST['approve'])){
-            $id=$_POST['id'];
-            $select = "UPDATE user SET Confirmation = 'approve' WHERE U_ID = '$id' ";
-            $result = mysqli_query($con, $select);
-            header('Location: User.php');
-          }
+          if (isset($_POST['approve'])) {
+            $id = $_POST['id'];
+            
+            
+            // Update user's confirmation status
+            $updateUser = "UPDATE user SET Confirmation = 'approve' WHERE U_ID = '$id'";
+            $resultUser = mysqli_query($con, $updateUser);
+        
+            if (!$resultUser) {
+                echo 'Error updating user: ' . mysqli_error($con);
+            } else {
+                // Retrieve the user's name and floor unit
+                $nameQuery = "SELECT U_Name, B_UF FROM user WHERE U_ID = '$id'";
+                $nameResult = mysqli_query($con, $nameQuery);
+        
+                if (!$nameResult) {
+                    echo 'Error fetching user name: ' . mysqli_error($con);
+                } else {
+                    $row = mysqli_fetch_assoc($nameResult);
+                    $userName = $row['U_Name'];
+                    $floorUnit = $row['B_UF'];
+        
+                    // Debugging output
+                    echo 'User Name: ' . $userName . '<br>';
+                    echo 'Floor Unit: ' . $floorUnit . '<br>';
+        
+                    // Update the building based on user's name and floor unit
+                    $updateBuilding = "UPDATE building SET U_Name = '$userName' WHERE U_Name IS NULL AND B_FU = '$floorUnit'";
+                    $resultBuilding = mysqli_query($con, $updateBuilding);
+        
+                    if (!$resultBuilding) {
+                        echo 'Error updating building: ' . mysqli_error($con);
+                    } else {
+                        header('Location: User.php');
+                    }
+                }
+            }
+        }
+          
+        
+        
+        
+        
+        
 
           if(isset($_POST['delete'])){
-            $id=$_POST['id'];
-            $select = "DELETE FROM user WHERE U_ID ='$id' ";
-            $result = mysqli_query($con, $select);
+            $id = $_POST['id'];
+
+            // Delete the user with the selected ID
+            $deleteQuery = "DELETE FROM user WHERE U_ID = $id";
+            $result = mysqli_query($con, $deleteQuery);
+        
+            // Update the IDs for remaining users
+            $updateQuery = "UPDATE user SET U_ID = U_ID - 1 WHERE U_ID > $id";
+            $result = mysqli_query($con, $updateQuery);
+        
             header('Location: User.php');
           }
         ?>      
@@ -90,6 +138,8 @@
             <th scope="col">Name</th>
             <th scope="col">Email Address</th>
             <th scope="col">Contact Number</th>
+            <th scope="col">Building Name</th>
+            <th scope="col">Unit Number</th>
             <th scope="col">User Type</th>
             <th scope="col">Status</th>
         </tr>
@@ -107,8 +157,10 @@
             <td><?php echo $row['U_Name']?></td>
             <td><?php echo $row['U_Email']?></td>
             <td><?php echo $row['U_Contact']?></td>
+            <td><?php echo $row['B_Name']?></td>
+            <td><?php echo $row['B_UF']?></td>
             <td><?php echo $row['U_Types']?></td>
-            <td><?php echo $row['Confirmation']?>
+            <td><?php echo $row['Confirmation']?></td>
           </tr>
         </tbody>
         <?php } ?>

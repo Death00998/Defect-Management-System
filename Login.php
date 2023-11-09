@@ -1,4 +1,5 @@
 <!doctype html>
+
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -36,7 +37,7 @@
             <h3 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Log in</h3>
 
             <div class="form-outline mb-4">
-              <input type="text" id="A_Name" name="A_Name" class="form-control form-control-lg" placeholder="Username" required/>
+              <input type="text" id="email" name="email" class="form-control form-control-lg" placeholder="Email" required/>
             </div>
 
             <div class="form-outline mb-4">
