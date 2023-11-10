@@ -22,7 +22,7 @@
     </div>
   </header>
       
-  <form>
+  <form method="post" action="Building.php">
       <h1 class="text-center text-white bg-secondary col-md-12">ADD BUILDING</h1>
       <div class="row g-4">
         <div class="col">
@@ -40,36 +40,52 @@
       <br>
       <div class="container">
       <div class="row align-self-end">
-        <input type="submit" id="submit" name="submit">
+        <input type="submit" id="submit" name="submit" value="Add Building">
       </div>  
       </div>
   </form>
   <?php
     include('connectDB.php');
-    if(isset($_POST['submit'])){
 
-      if (isset($_POST['BuildName']) && isset($_POST['FloorNum']) && isset($_POST['UnitNum'])) {
-        $B_Name = $_POST['BuildName'];
-
-    for ($floor = 1; $floor <= $_POST['FloorNum']; $floor++) {
-      for ($unit = 1; $unit <= $_POST['UnitNum']; $unit++) {
-          // Define the values to insert
-          $B_FU = "$floor-$unit";
-          $U_Name = "NULL";
-          // Prepare and execute the SQL query
-          $sql = "INSERT INTO building (B_Name, B_FU, U_Name) VALUES (?, ?, ?)";
-          $stmt = $con->prepare($sql);
-          $stmt->bind_param("sss", $B_Name, $B_FU, $U_Name);
-          if ($stmt->execute()) {
-              echo "Inserted: B_Name=$B_Name, B_FU=$B_FU, U_Name=$U_Name<br>";
-          } else {
-              echo "Error inserting data: " . $con->error;
-          }
-      }
-  }
-}
+if (isset($_POST['submit'])) {
+    if (!isset($_POST['BuildName']) || !isset($_POST['FloorNum']) || !isset($_POST['UnitNum'])) {
+        exit('Empty Field(s)');
     }
- 
+
+    if (empty($_POST['BuildName']) || empty($_POST['FloorNum']) || empty($_POST['UnitNum'])) {
+        exit('Values Empty');
+    }
+
+    $B_Name = $_POST['BuildName'];
+    
+    for ($floor = 1; $floor <= $_POST['FloorNum']; $floor++) {
+        for ($unit = 1; $unit <= $_POST['UnitNum']; $unit++) {
+            // Define the values to insert
+            $B_FU = "$floor-$unit";
+            
+            // Check if the record already exists
+            $checkQuery = "SELECT B_ID FROM building WHERE B_Name = ? AND B_FU = ?";
+            $checkStmt = $con->prepare($checkQuery);
+            $checkStmt->bind_param("ss", $B_Name, $B_FU);
+            $checkStmt->execute();
+            $checkStmt->store_result();
+            
+            if ($checkStmt->num_rows == 0) {
+                // Record does not exist, so insert it
+                $insertQuery = "INSERT INTO building (B_Name, B_FU, U_Name) VALUES (?, ?, NULL)";
+                $insertStmt = $con->prepare($insertQuery);
+                $insertStmt->bind_param("ss", $B_Name, $B_FU);
+                
+                if ($insertStmt->execute()) {
+                } else {
+                    echo "Error inserting data: " . $con->error;
+                }
+            } else {
+                echo "Record with $B_Name and $B_FU already exists. Skipped insertion.<br>";
+            }
+        }
+    }
+}
   ?>
 
   <br><br><br>
@@ -95,6 +111,7 @@
             <th scope="row"><?php echo $row['B_ID']?></th>
             <td><?php echo $row['B_Name']?></td>
             <td><?php echo $row['B_FU']?></td>
+            <td><?php echo $row['U_Name']?></td>
           </tr>
         </tbody>
         <?php } ?>
