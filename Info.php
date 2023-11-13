@@ -23,6 +23,11 @@ if (isset($_SESSION['email'])) {
     exit();
 }
 
+// Generate and set CSRF token
+if (!isset($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 // Function to update the user password
 function updateUserPassword($newPassword) {
     global $con, $email;
@@ -43,28 +48,31 @@ function updateUserInfo($fullName, $contact) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if (isset($_POST['newPassword'])) {
-        // Update the user password
-        updateUserPassword($_POST['newPassword']);
+    // Validate CSRF token
+    if (!empty($_POST['csrf_token']) && hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+        // CSRF token is valid, proceed with form processing
 
-        // Show the success message modal
-        echo '<script type="text/javascript">
-                $(document).ready(function(){
-                    $("#successModal").modal("show");
-                });
-              </script>';
-    } elseif (isset($_POST['fullName']) && isset($_POST['contact'])) {
-        // Update user information
-        $fullName = $_POST['fullName'];
-        $contact = $_POST['contact'];
-        updateUserInfo($fullName, $contact);
+        if (isset($_POST['newPassword'])) {
+            // Update the user password
+            updateUserPassword($_POST['newPassword']);
 
-        // Show the success message modal
-        echo '<script type="text/javascript">
-                $(document).ready(function(){
-                    $("#successModal").modal("show");
-                });
-              </script>';
+            // Check if the password update was successful
+            $passwordUpdateSuccess = true; // Set to true if successful, false otherwise
+        } elseif (isset($_POST['fullName']) && isset($_POST['contact'])) {
+            // Update user information
+            $fullName = $_POST['fullName'];
+            $contact = $_POST['contact'];
+            updateUserInfo($fullName, $contact);
+
+            // Check if the user information update was successful
+            $userInfoUpdateSuccess = true; // Set to true if successful, false otherwise
+        }
+    } else {
+        // Invalid CSRF token, handle accordingly (e.g., log the attempt, reject the request)
+        // You might want to redirect the user to a specific error page or log the incident.
+        echo "CSRF Token: " . $_SESSION['csrf_token'];
+
+        die("Invalid CSRF token");
     }
 }
 ?>
@@ -92,7 +100,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <div class="container mt-4">
     <h2>User Information</h2>
-    <form id="userInfoForm" method="post" action="">
+    <form id="userInfoForm" method="post" action="" enctype="multipart/form-data">
         <div class="mb-3">
             <label for="fullName" class="form-label">Full Name</label>
             <input type="text" class="form-control" id="fullName" name="fullName" value="<?php echo $userDetails['U_Name']; ?>" readonly>
@@ -114,18 +122,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <label for="newPassword" class="form-label">New Password</label>
             <input type="password" class="form-control" id="newPassword" name="newPassword" required>
         </div>
+        <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
 
         <button type="button" class="btn btn-primary" onclick="editUserInfo()">Edit</button>
         <button type="submit" class="btn btn-success" style="display: none;">Save</button>
     </form>
 </div>
 
-<!-- Success Message Popup -->
-<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+<!-- Success Message Popup for Password Update -->
+<div class="modal fade" id="passwordSuccessModal" tabindex="-1" aria-labelledby="passwordSuccessModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="successModalLabel">Success</h5>
+                <h5 class="modal-title" id="passwordSuccessModalLabel">Success</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Password updated successfully!
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Success Message Popup for User Information Update -->
+<div class="modal fade" id="userInfoSuccessModal" tabindex="-1" aria-labelledby="userInfoSuccessModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="userInfoSuccessModalLabel">Success</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -134,6 +158,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </div>
 </div>
+
 
 <!-- Bootstrap JavaScript library -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
@@ -153,6 +178,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Hide the "Edit" button
         document.querySelector('button[type="button"]').style.display = 'none';
     }
+
+    // Display the appropriate success modal based on the updates
+    <?php
+    if (isset($passwordUpdateSuccess) && $passwordUpdateSuccess) {
+        echo '$(document).ready(function(){ $("#passwordSuccessModal").modal("show"); });';
+    }
+
+    if (isset($userInfoUpdateSuccess) && $userInfoUpdateSuccess) {
+        echo '$(document).ready(function(){ $("#userInfoSuccessModal").modal("show"); });';
+    }
+    ?>
 </script>
 
 </body>

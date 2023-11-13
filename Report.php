@@ -1,10 +1,10 @@
 <?php
 session_start();
 include "connectDB.php";
+
 if (isset($_SESSION['email'])) {
     $email = $_SESSION['email'];
 } else {
-    // Redirect the user to the login page if not authenticated
     header('Location: login.php');
     exit();
 }
@@ -16,7 +16,40 @@ $row = mysqli_fetch_array($result);
 $error = array();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if (isset($_POST['D_Area'], $_POST['D_Description'], $_POST['Date'])) {
+    $requiredFields = ['D_Area', 'D_Description', 'Date'];
+
+    // Check if the 'D_Pic' key exists in $_FILES
+    if (isset($_FILES['D_Pic'])) {
+        $DPic = $_FILES['D_Pic'];
+
+        // Check if an image is uploaded
+        if (!empty($DPic["name"])) {
+            $fileName = basename($DPic["name"]);
+            $targetDirectory = "uploads/";
+            $targetFilePath = $targetDirectory . $fileName;
+            $fileType = pathinfo($targetFilePath, PATHINFO_EXTENSION);
+
+            $allowTypes = array('jpg', 'png', 'jpeg', 'gif');
+            if (in_array($fileType, $allowTypes) && move_uploaded_file($DPic["tmp_name"], $targetFilePath)) {
+                // Image uploaded successfully
+            } else {
+                $error[] = "Failed to upload the files!";
+            }
+        } else {
+            // No image uploaded, set $targetFilePath to an empty string
+            $targetFilePath = "no-image-available-icon-vector.jpg";
+
+        }
+    }
+
+    foreach ($requiredFields as $field) {
+        if (!isset($_POST[$field])) {
+            $error[] = "Please fill in all the fields";
+            break;
+        }
+    }
+
+    if (empty($error)) {
         $DArea = mysqli_real_escape_string($con, $_POST['D_Area']);
         $DDesc = mysqli_real_escape_string($con, $_POST['D_Description']);
         $Date = mysqli_real_escape_string($con, $_POST['Date']);
@@ -28,54 +61,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $UTypes = mysqli_real_escape_string($con, $row['U_Types']);
         $DCon = $_POST['DConfirm'];
 
-        $DPic = $_FILES['D_Pic'];
 
-        if (!empty($DPic["name"])) {
-            $fileName = basename($DPic["name"]);
-            $targetDirectory = "uploads/";
-            $targetFilePath = $targetDirectory . $fileName;
-            $fileType = pathinfo($targetFilePath, PATHINFO_EXTENSION);
+        $insertQuery = "INSERT INTO defect (B_Name, B_FU, U_ID, U_Name, D_Pic, D_Area, D_Description, U_Types, D_Date, DueDate, D_Confirm) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $stmt = mysqli_prepare($con, $insertQuery);
+        mysqli_stmt_bind_param($stmt, 'sssssssssss', $BName, $BFU, $UID, $UName, $targetFilePath, $DArea, $DDesc, $UTypes, $Date, $DDate, $DCon);
 
-            // Allow certain file formats
-            $allowTypes = array('jpg', 'png', 'jpeg', 'gif');
-            if (in_array($fileType, $allowTypes)) {
-                if (move_uploaded_file($DPic["tmp_name"], $targetFilePath)) {
-                    // Use prepared statements to prevent SQL injection
-                    $insertQuery = "INSERT INTO defect (B_Name, B_FU, U_ID, U_Name, D_Pic, D_Area, D_Description, U_Types, D_Date, DueDate, D_Confirm) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-                    $stmt = mysqli_prepare($con, $insertQuery);
-
-                    // Bind parameters
-                    mysqli_stmt_bind_param($stmt, 'sssssssssss', $BName, $BFU, $UID, $UName, $targetFilePath, $DArea, $DDesc, $UTypes, $Date, $DDate, $DCon);
-
-                    if (mysqli_stmt_execute($stmt)) {
-                        echo '<script>alert("Defect Submit Succcessfully!!!");</script>';
-                    } else {
-                        echo "Error: " . mysqli_error($con);
-                    }
-                    mysqli_stmt_close($stmt);
-                } else {
-                    $error[] = '<script>alert("Failed to upload the files!");</script>';
-                }
-            } else {
-                $error[] = '<script>alert("Sorry, only JPG, JPEG, PNG, & GIF files are allowed to upload.");</script>';
-            }
+        if (mysqli_stmt_execute($stmt)) {
+            echo '<script>alert("Defect Submit Successfully!!!");</script>';
+        } else {
+            echo "Error: " . mysqli_error($con);
         }
-
-        // Check for any errors or missing data
-        if (empty($DArea) || empty($DDesc)) {
-            $error[] = "Please fill in all the fields";
-        }
+        mysqli_stmt_close($stmt);
     }
 }
 
-// Handle and display the errors to the user
 if (!empty($error)) {
     foreach ($error as $err) {
         echo $err . "<br>";
     }
 }
 ?>
+
 
 
 <!DOCTYPE html>

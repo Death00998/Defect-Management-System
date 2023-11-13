@@ -1,6 +1,8 @@
 <?php
 // Start the session or resume the existing session
-session_start();
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 include "connectDB.php";
 
 // Check if the database connection is successful
@@ -38,6 +40,15 @@ if (!$result) {
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Defect Management System</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+    <style>
+        /* Custom styles for the image */
+        .defect-card-img {
+            max-height: 200px; /* Adjust the maximum height as needed */
+            object-fit: cover; /* or "contain" based on your preference */
+        }
+    </style>
+
 </head>
 <body>
     <header class="p-3 bg-dark text-white">
@@ -55,10 +66,15 @@ if (!$result) {
 
     <div class="container mt-4">
         <div class="row row-cols-1 row-cols-md-3 g-4" id="defectContainer">
-            <?php while ($row = mysqli_fetch_array($result)) { ?>
+            <?php
+            while ($row = mysqli_fetch_array($result)) {
+                // Adjust the image path based on the stored value
+                $imagePath = (strpos($row['D_Pic'], 'uploads/') === false) ? "./uploads/{$row['D_Pic']}" : "./{$row['D_Pic']}";
+            ?>
                 <div class="col">
                     <div class="card">
-                        <img src="./uploads/<?php echo $row['D_Pic']; ?>" class="card-img-top" alt="Defect Image">
+                        <!-- Add the "defect-card-img" class to the img element -->
+                        <img src="<?php echo $imagePath; ?>" class="card-img-top defect-card-img" alt="Defect Image" onerror="console.error('Error loading image:', this.src);">
                         <div class="card-body">
                             <h5 class="card-title"><?php echo $row['D_Area']?></h5>
                             <p class="card-text"><?php echo $row['D_Description']?></p>
@@ -74,24 +90,26 @@ if (!$result) {
     <script>
         // Function to dynamically add a new defect card
         function addDefectCard(data) {
-            const container = document.getElementById('defectContainer');
+        const container = document.getElementById('defectContainer');
 
-            const newCard = document.createElement('div');
-            newCard.classList.add('col');
+        const newCard = document.createElement('div');
+        newCard.classList.add('col');
 
-            newCard.innerHTML = `
-                <div class="card">
-                    <img src="./uploads/${data.D_Pic}" class="card-img-top" alt="Defect Image">
-                    <div class="card-body">
-                        <h5 class="card-title">${data.D_Area}</h5>
-                        <p class="card-text">${data.D_Description}</p>
-                        <p class="card-text">${data.D_Confirm}</p>
-                    </div>
+        const imagePath = "./uploads/" + data.D_Pic;
+
+        newCard.innerHTML = `
+            <div class="card">
+                <img src="${imagePath}" class="card-img-top" alt="Defect Image" onerror="console.error('Error loading image:', this.src);">
+                <div class="card-body">
+                    <h5 class="card-title">${data.D_Area}</h5>
+                    <p class="card-text">${data.D_Description}</p>
+                    <p class="card-text">${data.D_Confirm}</p>
                 </div>
-            `;
+            </div>
+        `;
 
-            container.appendChild(newCard);
-        }
+        container.appendChild(newCard);
+    }
 
         // Example: You can call this function with new defect data to add a new card
         // const newDefectData = {
