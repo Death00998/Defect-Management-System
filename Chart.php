@@ -54,9 +54,9 @@ $con->close();
 </header>
 
 <div class="container mt-4">
-  <h1>User Chart</h1>
     <div class="row justify-content-center">
         <div class="col-12 col-md-8">
+            <h3>User Chart</h3>
             <div class="row">
                 <div class="col">
                     <canvas id="chartUserContainer" style="height: 200px; width: 200px;"></canvas>
@@ -64,12 +64,10 @@ $con->close();
             </div>
         </div>
     </div>
-</div>
 
-<div class="container mt-4">
-  <h1>Building Chart</h1>
-    <div class="row justify-content-center">
+    <div class="row justify-content-center mt-4">
         <div class="col-12 col-md-8">
+            <h3>Building Chart</h3>
             <div class="row">
                 <div class="col">
                     <canvas id="chartBuildingContainer" style="height: 200px; width: 200px;"></canvas>
@@ -77,12 +75,10 @@ $con->close();
             </div>
         </div>
     </div>
-</div>
 
-<div class="container mt-4">
-  <h1>Defect Status Chart</h1>
-    <div class="row justify-content-center">
+    <div class="row justify-content-center mt-4">
         <div class="col-12 col-md-8">
+            <h3>Defect Status Chart</h3>
             <div class="row">
                 <div class="col">
                     <canvas id="chartDefectStatusContainer" style="height: 200px; width: 200px;"></canvas>
@@ -143,6 +139,10 @@ $con->close();
                 ],
             }],
         },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false, // Allows the chart to adjust to the size of its container
+        },
     });
 
     // Creating the doughnut chart for buildings using Chart.js
@@ -158,6 +158,10 @@ $con->close();
                     'rgba(54, 162, 235, 0.7)',
                 ],
             }],
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
         },
     });
 
@@ -175,6 +179,10 @@ $con->close();
                     'rgba(255, 206, 86, 0.7)',
                 ],
             }],
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
         },
     });
 </script>

@@ -20,8 +20,8 @@
         </div>
     </div>
 </header>
-
-<form method="post" action="Building.php">
+<div class="container">
+<form method="post" action="Building.php" autocomplete="off">
     <h1 class="text-center text-white bg-secondary col-md-12">ADD BUILDING</h1>
     <div class="row g-4">
         <div class="col">
@@ -43,7 +43,7 @@
         </div>
     </div>
 </form>
-
+</div>
 <!-- Move the search form outside of the main form -->
 <br><br>
 <div class="container">
@@ -76,6 +76,8 @@
 </div>
 
 <?php
+session_start(); // Start the session
+
 include('connectDB.php');
 
 // Function to add a building
@@ -99,16 +101,37 @@ function addBuilding($con, $B_Name, $FloorNum, $UnitNum) {
                 $insertStmt->bind_param("ss", $B_Name, $B_FU);
 
                 if ($insertStmt->execute()) {
+                    $_SESSION['message'] = "Building added successfully";
                 } else {
-                    echo "Error inserting data: " . $con->error;
+                    $_SESSION['message'] = "Error adding building: " . $con->error;
                 }
             } else {
-                echo "Record with $B_Name and $B_FU already exists. Skipped insertion.<br>";
+                $_SESSION['message'] = "Record with $B_Name and $B_FU already exists. Skipped insertion.";
             }
         }
     }
 }
 
+// Check if the form is submitted
+if (isset($_POST['submit'])) {
+    // Retrieve form data
+    $B_Name = $_POST['BuildName'];
+    $FloorNum = $_POST['FloorNum'];
+    $UnitNum = $_POST['UnitNum'];
+
+    // Add the building
+    addBuilding($con, $B_Name, $FloorNum, $UnitNum);
+
+    // Redirect to the same page to clear the form and prevent form resubmission
+    header("Location: Building.php");
+    exit();
+}
+
+// Display success or failure message if set
+if (isset($_SESSION['message'])) {
+    echo '<script>alert("' . $_SESSION['message'] . '");</script>';
+    unset($_SESSION['message']); // Clear the message after displaying it
+}
 // Sorting logic
 if (isset($_POST['sort'])) {
     $sort = $_POST['sort'];

@@ -107,50 +107,63 @@
           </div>
           <div class="col-sm-6 text-black">
             <div class="d-flex align-items-center h-custom-2 px-5 ms-xl-4 mt-5 pt-5 pt-xl-0 mt-xl-n5">
-              <form style="width: 23rem;" name="registerform" action="SignUp.php" method="post">
+              <form style="width: 23rem;" name="registerform" action="SignUp.php" method="post" autocomplete="off">
                 <h3 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Register</h3>
                 <div class="form-outline mb-4">
                   
                 <div class="form-group">
-                  <div class="row">
-                      <div class="col-md-6">
-                          <label for="BuildingName">Select Building</label>
-                          <select class="form-control required" id="BuildingName" name="BuildingName">
-                            <option value="" disabled="disabled" selected="selected">Select Building</option>
-                            <?php 
-                            include('connectDB.php');
-                            $query = 'SELECT DISTINCT B_Name FROM building'; // Use DISTINCT to select unique values
-                            $result = $con->query($query);
-                            
-                            if ($result->num_rows > 0) {
-                                while ($row = $result->fetch_assoc()) {
-                                    echo '<option value="' . $row['B_Name'] . '">' . $row['B_Name'] . '</option>';
-                                }
-                            }
-                            ?>
-                        </select>
-
-                      </div>
-                      <div class="col-md-6">
-    <label for="BuildingFloorUnit">Select Floor Unit</label>
-    <select class="form-control required" id="BuildingFloorUnit" name="BuildingFloorUnit" placeholder="Select Floor Unit">
-        <option value="" disabled="disabled" selected="selected">Select Floor Unit</option>
-        <?php 
-        include('connectDB.php');
-        $query = 'SELECT DISTINCT B_FU FROM building WHERE U_Name IS NULL'; // Add a condition to filter rows based on your needs
-        $result = $con->query($query);
-
-        if ($result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-                echo '<option value="' . $row['B_FU'] . '">' . $row['B_FU'] . '</option>';
-            }
-        }
-        ?>
-    </select>
+    <div class="row">
+        <div class="col-md-6">
+            <label for="BuildingName">Select Building</label>
+            <select class="form-control required" id="BuildingName" name="BuildingName" onchange="updateFloorUnits()">
+                <option value="" disabled="disabled" selected="selected">Select Building</option>
+                <?php 
+                include('connectDB.php');
+                $query = 'SELECT DISTINCT B_Name FROM building'; // Use DISTINCT to select unique values
+                $result = $con->query($query);
+                
+                if ($result->num_rows > 0) {
+                    while ($row = $result->fetch_assoc()) {
+                        echo '<option value="' . $row['B_Name'] . '">' . $row['B_Name'] . '</option>';
+                    }
+                }
+                ?>
+            </select>
+        </div>
+        <div class="col-md-6">
+            <label for="BuildingFloorUnit">Select Floor Unit</label>
+            <select class="form-control required" id="BuildingFloorUnit" name="BuildingFloorUnit" placeholder="Select Floor Unit">
+                <option value="" disabled="disabled" selected="selected">Select Floor Unit</option>
+                <!-- Options will be populated dynamically using JavaScript -->
+            </select>
+        </div>
+    </div>
 </div>
 
-                  </div>
-                </div>
+<script>
+    function updateFloorUnits() {
+        var selectedBuilding = document.getElementById("BuildingName").value;
+
+        if (selectedBuilding !== "") {
+            // If a building is selected, fetch corresponding floor units
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    // Update the options in BuildingFloorUnit dropdown
+                    document.getElementById("BuildingFloorUnit").innerHTML = xhr.responseText;
+                }
+            };
+
+            // Make a request to fetch floor units based on the selected building
+            xhr.open("GET", "fetch_floor_units.php?building=" + selectedBuilding, true);
+            xhr.send();
+        } else {
+            // If no building is selected, reset the BuildingFloorUnit dropdown
+            document.getElementById("BuildingFloorUnit").innerHTML = '<option value="" disabled="disabled" selected="selected">Select Floor Unit</option>';
+        }
+    }
+</script>
+
 
                 </div>
                 <div class="form-outline mb-4">
@@ -166,10 +179,10 @@
                   <input type="email" id="email" name="email" class="form-control form-control-lg" placeholder="Email" required="required" />
                 </div>
                 <div class="form-outline mb-4">
-                  <input type="password" id="password" name="password" class="form-control form-control-lg" placeholder="Password" required="required" />
+                  <input type="password" id="password" name="password" onCopy="return false" onDrag="return false" onDrop="return false" onPaste="return false" class="form-control form-control-lg" placeholder="Password" required="required" />
                 </div>
                 <div class="form-outline mb-4">
-                  <input type="password" id="cpassword" name="cpassword" class="form-control form-control-lg" placeholder="Confirm Password" required="required" />
+                  <input type="password" id="cpassword" name="cpassword" onCopy="return false" onDrag="return false" onDrop="return false" onPaste="return false" class="form-control form-control-lg" placeholder="Confirm Password" required="required" />
                 </div>
                 <div class="form-outline mb-4">
                   <select id="U_Types" name="types" class="form-control form-control-lg" required="required">

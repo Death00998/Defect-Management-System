@@ -32,7 +32,7 @@
 
         <div class="d-flex align-items-center h-custom-2 px-5 ms-xl-4 mt-5 pt-5 pt-xl-0 mt-xl-n5" >
 
-          <form style="width: 23rem;" action="Authentication.php" onsubmit="return validation()" method="POST" >
+          <form style="width: 23rem;" action="Authentication.php" onsubmit="return validation()" method="POST" autocomplete="off">
 
             <h3 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Log in</h3>
 
@@ -41,14 +41,14 @@
             </div>
 
             <div class="form-outline mb-4">
-              <input type="password" id="password" name="password" class="form-control form-control-lg" placeholder="Password" required/>
+              <input type="password" id="password" name="password" onCopy="return false" onDrag="return false" onDrop="return false" onPaste="return false" class="form-control form-control-lg" placeholder="Password" required/>
             </div>
 
             <div class="pt-1 mb-4">
               <button type="submit" class="btn btn-info btn-lg btn-block"  value="Login">Login</button>
             </div>
 
-            <p class="small mb-5 pb-lg-2"><a class="text-muted" href="#!">Forgot password?</a></p>
+            <p class="small mb-5 pb-lg-2"><a class="text-muted" href="forgot_password.php">Forgot password?</a></p>
             <p>Don't have an account? <a href="SignUp.php" class="link-info">Register here</a></p>
 
           </form>

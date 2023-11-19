@@ -107,7 +107,7 @@ if (!empty($error)) {
 </header>
 
 <div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
-    <form class="col" method="post" action="Report.php" enctype="multipart/form-data">
+    <form class="col" method="post" action="Report.php" enctype="multipart/form-data" autocomplete="off">
         <h1 class="mt-5">Submit A New Defect</h1>
         <div class="mb-3">
             <input type="text" class="form-control" id="D_Area" name="D_Area" placeholder="Defect Area" required>
