@@ -7,15 +7,18 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
   </head>
   <body>
-    <header class="p-3 text-bg-dark">
-      <div class="container">
-        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-end">
-          <button type="button" class="btn btn-outline-light me-2" onclick="location.href='Login.php'">Login</button>
-          <button type="button" class="btn btn-warning" onclick="location.href='SignUp.php'">Sign-up</button>
+  <header class="p-3 text-bg-dark">
+    <div class="container d-flex justify-content-between align-items-center">
+        <div class="d-flex flex-wrap align-items-center justify-content-center">
+            <h2>DEFECT MANAGEMENT SYSTEM</h2>
         </div>
-      </div>
-    </header>
-
+        <div class="d-flex flex-wrap align-items-center justify-content-center">
+            <button type="button" class="btn btn-outline-light me-2" onclick="location.href='Login.php'">Login</button>
+            <button type="button" class="btn btn-warning" onclick="location.href='SignUp.php'">Sign-up</button>
+        </div>
+    </div>
+</header>
+  
     <?php
     include('connectDB.php');
 
@@ -133,7 +136,7 @@
         <div class="col-md-6">
             <label for="BuildingFloorUnit">Select Floor Unit</label>
             <select class="form-control required" id="BuildingFloorUnit" name="BuildingFloorUnit" placeholder="Select Floor Unit">
-                <option value="" disabled="disabled" selected="selected">Select Floor Unit</option>
+                <option value="" disabled="disabled" selected="selected">(Floor - Unit)</option>
                 <!-- Options will be populated dynamically using JavaScript -->
             </select>
         </div>
@@ -170,13 +173,13 @@
                   <input type="text" id="id" name="id" class="form-control form-control-lg" placeholder="Insert IC Number" required="required" pattern="\d{12}" title="Invalid IC number. It should be 12 digits." />
                 </div>
                 <div class="form-outline mb-4">
-                  <input type="text" id="username" name="username" class="form-control form-control-lg" placeholder="Username" required="required" />
+                  <input type="text" id="username" name="username" class="form-control form-control-lg" placeholder="Full Name" required="required" />
                 </div>
                 <div class="form-outline mb-4">
-                  <input type="text" id="contact" name="contact" class="form-control form-control-lg" placeholder="Contact" required="required" />
+                  <input type="text" id="contact" name="contact" class="form-control form-control-lg" placeholder="Contact Number(exp:0123456789)" required="required" />
                 </div>
                 <div class="form-outline mb-4">
-                  <input type="email" id="email" name="email" class="form-control form-control-lg" placeholder="Email" required="required" />
+                  <input type="email" id="email" name="email" class="form-control form-control-lg" placeholder="Email(exp:xx@gmail.com)" required="required" />
                 </div>
                 <div class="form-outline mb-4">
                   <input type="password" id="password" name="password" onCopy="return false" onDrag="return false" onDrop="return false" onPaste="return false" class="form-control form-control-lg" placeholder="Password" required="required" />

@@ -9,17 +9,28 @@
 
 <header class="p-3 bg-dark text-white">
     <div class="container">
-        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-                <li><a href="MainMenu.php" class="nav-link px-2 text-white">Home</a></li>
-                <li><a href="Building.php" class="nav-link px-2 text-secondary">Building</a></li>
-                <li><a href="User.php" class="nav-link px-2 text-white">User</a></li>
-                <li><a href="Chart.php" class="nav-link px-2 text-white">Chart</a></li>
-            </ul>
-            <button type="button" class="btn btn-warning" onclick="location.href='Logout.php'">Logout</button>
+        <div class="d-flex flex-wrap align-items-center justify-content-between">
+            <div class="d-flex flex-wrap align-items-center justify-content-center">
+                <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                    <li><a href="MainMenu.php" class="nav-link px-2 text-white">Home</a></li>
+                    <li><a href="Building.php" class="nav-link px-2 text-secondary">Building</a></li>
+                    <li><a href="User.php" class="nav-link px-2 text-white">User</a></li>
+                    <li><a href="Chart.php" class="nav-link px-2 text-white">Chart</a></li>
+                </ul>
+            </div>
+            <div class="text-center">
+                <h1>DEFECT MANAGEMENT SYSTEM</h1>
+            </div>
+            <div class="d-flex flex-wrap align-items-center justify-content-center">
+                <button type="button" class="btn btn-warning" onclick="location.href='Logout.php'">Logout</button>
+            </div>
         </div>
     </div>
 </header>
+
+
+
+<br>
 <div class="container">
 <form method="post" action="Building.php" autocomplete="off">
     <h1 class="text-center text-white bg-secondary col-md-12">ADD BUILDING</h1>
@@ -47,19 +58,14 @@
 <!-- Move the search form outside of the main form -->
 <br><br>
 <div class="container">
-    <form method="post" action="Building.php" class="row align-items-end">
+    <form method="post" action="Building.php" class="row align-items-end" autocomplete="off">
         <div class="col-md-6 mb-3">
-            <div class="input-group">
-                <div class="form-outline">
-                    <input id="search-focus" type="search" id="search" class="form-control" placeholder="Search Building" name="search">
-                </div>
-                <button type="submit" class="btn btn-primary">
-                    Search <i class="bi bi-search"></i>
-                </button>
+            <div class="form-outline">
+                <input id="search" type="search" class="form-control" placeholder="Search Building" name="search">
             </div>
         </div>
 
-        <div class="col-md-6 mb-3">
+        <div class="col-md-4 mb-3">
             <div class="form-group">
                 <label for="sort" class="mr-2">Sort By:</label>
                 <select class="form-control" id="sort" name="sort">
@@ -72,8 +78,17 @@
                 </select>
             </div>
         </div>
+
+        <div class="col-md-2 mb-3">
+            <div class="form-outline">
+                <button type="submit" class="btn btn-primary">
+                    Search <i class="bi bi-search"></i>
+                </button>
+            </div>
+        </div>
     </form>
 </div>
+
 
 <?php
 session_start(); // Start the session
@@ -85,6 +100,8 @@ function addBuilding($con, $B_Name, $FloorNum, $UnitNum) {
     for ($floor = 1; $floor <= $FloorNum; $floor++) {
         for ($unit = 1; $unit <= $UnitNum; $unit++) {
             // Define the values to insert
+            $floor= sprintf('%02d', $floor);
+            $unit = sprintf('%02d', $unit);
             $B_FU = "$floor-$unit";
 
             // Check if the record already exists

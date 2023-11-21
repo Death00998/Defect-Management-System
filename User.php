@@ -10,20 +10,28 @@
 
 <body>
 
-    <header class="p-3 bg-dark text-white">
-        <div class="container">
-            <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+<header class="p-3 bg-dark text-white">
+    <div class="container">
+        <div class="d-flex flex-wrap align-items-center justify-content-between">
+            <div class="d-flex flex-wrap align-items-center justify-content-center">
                 <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
                     <li><a href="MainMenu.php" class="nav-link px-2 text-white">Home</a></li>
                     <li><a href="Building.php" class="nav-link px-2 text-white">Building</a></li>
                     <li><a href="User.php" class="nav-link px-2 text-secondary">User</a></li>
                     <li><a href="Chart.php" class="nav-link px-2 text-white">Chart</a></li>
                 </ul>
-
+            </div>
+            <div class="text-center">
+                <h1>DEFECT MANAGEMENT SYSTEM</h1>
+            </div>
+            <div class="d-flex flex-wrap align-items-center justify-content-center">
                 <button type="button" class="btn btn-warning" onclick="location.href='Logout.php'">Logout</button>
             </div>
         </div>
-    </header>
+    </div>
+</header>
+
+<br>
     <div class="container">
     <table class="table table-bordered col-md-12">
         <h1 class="text-center bg-secondary col-md-12">PENDING LIST</h1>
@@ -62,9 +70,9 @@
                         <form action="User.php" method="post">
                             <input type="hidden" name="id" value="<?php echo $row['U_ID'] ?>" />
                             <input type="submit" name="approve"
-                                class="text-white bg-success bg-gradient rounded-pill border-success w-25" value="Approve">
+                                class="text-white bg-success bg-gradient rounded-pill border-success w-35" value="Approve">
                             <input type="submit" name="delete"
-                                class="text-white bg-danger bg-gradient rounded-pill border-danger w-25" value="delete">
+                                class="text-white bg-danger bg-gradient rounded-pill border-danger w-35" value="delete">
                         </form>
                     </td>
                 </tr>
@@ -185,7 +193,9 @@
             header('Location: User.php');
         }
         ?>
+            </table>
         </div>
+
         <div class="container">
         <table class="table table-bordered col-md-12">
             <h1 class="text-center text-white bg-success col-md-12">APPROVED LIST</h1>
@@ -195,10 +205,7 @@
                     <th scope="col">Name</th>
                     <th scope="col">Email Address</th>
                     <th scope="col">Contact Number</th>
-                    <th scope="col">Building Name</th>
-                    <th scope="col">Unit Number</th>
                     <th scope="col">User Type</th>
-                    <th scope="col">Status</th>
                 </tr>
             </thead>
 
@@ -214,10 +221,7 @@
                         <td><?php echo $row['U_Name'] ?></td>
                         <td><?php echo $row['U_Email'] ?></td>
                         <td><?php echo $row['U_Contact'] ?></td>
-                        <td><?php echo $row['B_Name'] ?></td>
-                        <td><?php echo $row['B_UF'] ?></td>
                         <td><?php echo $row['U_Types'] ?></td>
-                        <td><?php echo $row['Confirmation'] ?></td>
                     </tr>
                 </tbody>
             <?php } ?>

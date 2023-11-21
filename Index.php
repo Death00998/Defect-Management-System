@@ -51,20 +51,30 @@ if (!$result) {
 
 </head>
 <body>
-    <header class="p-3 bg-dark text-white">
-        <div class="container">
-            <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-                <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-                    <li><a href="Index.php" class="nav-link px-2 text-secondary">Home</a></li>
-                    <li><a href="Report.php" class="nav-link px-2 text-white">Report</a></li>
-                    <li><a href="Info.php" class="nav-link px-2 text-white">Info</a></li>
-                </ul>
-                <button type="button" class="btn btn-warning" onclick="location.href='Logout.php'">Logout</button>
-            </div>
+<header class="p-3 bg-dark text-white">
+    <div class="container d-flex justify-content-between align-items-center">
+        <div class="d-flex flex-wrap align-items-center">
+            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                <li><a href="Index.php" class="nav-link px-2 text-secondary">Home</a></li>
+                <li><a href="Report.php" class="nav-link px-2 text-white">Report</a></li>
+                <li><a href="Info.php" class="nav-link px-2 text-white">Info</a></li>
+            </ul>
         </div>
-    </header>
+        <div class="text-center">
+            <h1>DEFECT MANAGEMENT SYSTEM</h1>
+        </div>
+        <div>
+            <button type="button" class="btn btn-warning" onclick="location.href='Logout.php'">Logout</button>
+        </div>
+    </div>
+</header>
+
 
     <div class="container mt-4">
+    <?php
+    // Check if there are rows in the result
+    if ($result && mysqli_num_rows($result) > 0) {
+    ?>
         <div class="row row-cols-1 row-cols-md-3 g-4" id="defectContainer">
             <?php
             while ($row = mysqli_fetch_array($result)) {
@@ -84,7 +94,13 @@ if (!$result) {
                 </div>
             <?php } ?>
         </div>
-    </div>
+    <?php
+    } else {
+        // Display a message when there is no data
+        echo '<p class="text-center">No defects found.</p>';
+    }
+    ?>
+</div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     <script>
@@ -111,14 +127,6 @@ if (!$result) {
         container.appendChild(newCard);
     }
 
-        // Example: You can call this function with new defect data to add a new card
-        // const newDefectData = {
-        //     D_Pic: 'new_defect_image.jpg',
-        //     D_Area: 'New Defect Area',
-        //     D_Description: 'New Defect Description',
-        //     D_Confirm: 'New Defect Confirmation',
-        // };
-        // addDefectCard(newDefectData);
     </script>
 </body>
 </html>

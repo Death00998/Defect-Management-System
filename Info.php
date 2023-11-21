@@ -109,13 +109,18 @@ if (isset($passwordUpdateSuccess) && $passwordUpdateSuccess) {
 ?>
 
 <header class="p-3 bg-dark text-white">
-    <div class="container">
-        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+    <div class="container d-flex justify-content-between align-items-center">
+        <div class="d-flex flex-wrap align-items-center">
             <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
                 <li><a href="Index.php" class="nav-link px-2 text-white">Home</a></li>
                 <li><a href="Report.php" class="nav-link px-2 text-white">Report</a></li>
                 <li><a href="Info.php" class="nav-link px-2 text-secondary">Info</a></li>
             </ul>
+        </div>
+        <div class="text-center">
+            <h1>DEFECT MANAGEMENT SYSTEM</h1>
+        </div>
+        <div>
             <button type="button" class="btn btn-warning" onclick="location.href='Logout.php'">Logout</button>
         </div>
     </div>
