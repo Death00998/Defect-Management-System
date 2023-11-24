@@ -115,7 +115,18 @@ if (!empty($error)) {
     <form class="col" method="post" action="Report.php" enctype="multipart/form-data" autocomplete="off">
         <h1 class="mt-5">Submit A New Defect</h1>
         <div class="mb-3">
-            <input type="text" class="form-control" id="D_Area" name="D_Area" placeholder="Defect Area" required>
+            <select class="form-control" id="D_Area" name="D_Area" name="DefectArea">
+            <option value="" disabled="disabled" selected="selected">Select Building</option>
+            <option value="Master Bedroom">Master Bedroom</option>
+            <option value="Bathroom">Bathroom</option>
+            <option value="Kitchen">Kitchen</option>
+            <option value="Living Room">Living Room</option>
+            <option value="Dining Room">Dining Room</option>
+            <option value="Bedroom">Bedroom</option>
+            <option value="Laundry">Laundry</option>
+            <option value="Storage">Storage</option>
+            <option value="Entrance">Entrance</option>
+            </select>
         </div>
         <div class="mb-3">
             <input type="text" class="form-control" id="D_Description" name="D_Description"
