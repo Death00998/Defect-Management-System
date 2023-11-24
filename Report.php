@@ -76,9 +76,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 if (!empty($error)) {
+    echo '<script>';
     foreach ($error as $err) {
-        echo $err . "<br>";
+        echo 'alert("' . $err . '");';
     }
+    echo '</script>';
 }
 ?>
 
@@ -128,13 +130,16 @@ if (!empty($error)) {
             <option value="Entrance">Entrance</option>
             </select>
         </div>
+
         <div class="mb-3">
-            <input type="text" class="form-control" id="D_Description" name="D_Description"
-                   placeholder="Defect Description" required>
+            <textarea class="form-control" style="height: 200px" id="D_Description" name="D_Description"
+                    placeholder="Enter a detailed description of the defect here..." required></textarea>
         </div>
+
         <div class="mb-3">
             <input type="file" class="form-control" id="D_Pic" name="D_Pic" accept="image/*" onchange="previewImage(event)">
         </div>
+
         <img id="imagePreview" src="" alt="Preview"
              style="max-width: 100%; max-height: 300px; display: none;">
         <input type="hidden" id="Date" name="Date" readonly>
