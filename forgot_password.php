@@ -65,14 +65,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <body>
 
-    <header class="p-3 bg-dark text-white">
-        <div class="container">
-            <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-end">
-                <button type="button" class="btn btn-outline-light me-2" onclick="location.href='Login.php'">Login</button>
-                <button type="button" class="btn btn-warning" onclick="location.href='SignUp.php'">Sign-up</button>
-            </div>
+<header class="p-3 text-bg-dark">
+    <div class="container d-flex justify-content-between align-items-center">
+        <div class="d-flex flex-wrap align-items-center justify-content-center">
+            <h2>DEFECT MANAGEMENT SYSTEM</h2>
         </div>
-    </header>
+        <div class="d-flex flex-wrap align-items-center justify-content-center">
+            <button type="button" class="btn btn-outline-light me-2" onclick="location.href='Login.php'">Login</button>
+            <button type="button" class="btn btn-warning" onclick="location.href='SignUp.php'">Sign-up</button>
+        </div>
+    </div>
+</header>
 
     <div class="container mt-5">
         <h2 class="mb-4">Forgot Password</h2>

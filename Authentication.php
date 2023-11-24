@@ -17,18 +17,7 @@ $result = mysqli_query($con, $sql);
 $count = mysqli_num_rows($result);
 
 if ($count == 1) {
-    // Admin login
-    //$row = mysqli_fetch_assoc($result);
-    //$hashedPassword = $row['password'];
     include("MainMenu.php");
-    //if (password_verify($password, $hashedPassword)) {
-        // Admin login successful
-        //include("MainMenu.php");
-    //} else {
-        // Admin login failed
-       // echo '<script>alert("WRONG USERNAME AND PASSWORD")</script>';
-        //include("Login.php");
-    //}
     }
      else {
     // If admin login failed, check the user login

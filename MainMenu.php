@@ -73,8 +73,8 @@
                 <form action="MainMenu.php" method="post">
                     <input type="hidden" name= "id" value="<?php echo $row['U_ID']?>"/>
                     <input type="hidden" name= "did" value="<?php echo $row['ID']?>"/>
-                    <input type="submit" name="Done" class="text-white bg-success bg-gradient rounded-pill border-success w-25" value="Done">
-                    <input type="submit" name="Deny" class="text-white bg-danger bg-gradient rounded-pill border-danger w-25" value="Deny">
+                    <input type="submit" name="Done" class="text-white bg-success bg-gradient rounded-pill border-success w-35" value="Done">
+                    <input type="submit" name="Deny" class="text-white bg-danger bg-gradient rounded-pill border-danger w-35" value="Deny">
                 </form>
             </td>
         </tr>
